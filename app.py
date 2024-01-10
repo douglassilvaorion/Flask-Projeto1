@@ -1,48 +1,63 @@
 from flask import Flask, render_template, request
-import urllib.request, json
+import requests, json
+import pandas as pd
+from urllib.parse import urlparse
+from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 
-frutas = []
-registros=[]
+#Inicia comunicação com o Banco de dados
+app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///autotrac.db"
 
+app.app_context().push()
+db = SQLAlchemy(app)
 
+##criando estrutura do banco de dados
+class deputados(db.Model):
+	id = db.Column(db.Integer, primary_key=True)  
+	nome = db.Column(db.String(100))
+	partido = db.Column(db.String(20))
+	estado = db.Column(db.String(2))
+	legendaid = db.Column(db.Integer)
+	fotourl = db.Column(db.String(100))
+	email = db.Column(db.String(200))
+	
+	def __init__(self, nome, partido, estado, legendaid, fotourl, email):
+		self.nome = nome
+		self.partido = partido
+		self.estado = estado
+		self.legendaid = legendaid
+		self.fotourl = fotourl
+		self.email = email
+
+#Fim da Montagem de Dados do Banco
+
+#Inicia Busca de Dados API
+url        = 'https://dadosabertos.camara.leg.br/api/v2/deputados'
+parametros = {}
+resposta   = requests.request("GET", url, params=parametros)
+objetos    = json.loads(resposta.text)
+dados      = objetos['dados']
+
+df = pd.DataFrame(dados)
+
+for col in df.columns:
+  df[col] = df[col].apply(str)
+#Fim tratamento dos dados
+
+#Leitura dos dados e Gravação no Banco de dados
+
+for i in df.index:
+	
+	deputado = deputados(df['nome'][i], df['siglaPartido'][i], df['siglaUf'][i], df['idLegislatura'][i],df['urlFoto'][i],df['email'][i])
+	db.session.add(deputado)
+	db.session.commit()
+  
 @app.route('/', methods=["GET", "POST"])
-def principal():
-	#frutas = ["Morango", "Uva", "Laranja", "Mamão", "Maçã", "Pêra", "Melão", "Abacaxi"]
-	if request.method == "POST":
-		if request.form.get("fruta"):
-			frutas.append(request.form.get("fruta"))
-	return render_template("index.html", frutas=frutas)
+def principal():	
+	return render_template("index.html", deputados=deputados.query.all())
 
-
-@app.route('/sobre', methods=["GET", "POST"])
-def sobre():
-	#notas = {"Fulano":5.0, "Beltrano":6.0, "Aluno": 7.0, "Sicrano":8.5, "Rodrigo":9.5}
-	if request.method == "POST":
-		if request.form.get("aluno") and request.form.get("nota"):
-			registros.append({"aluno": request.form.get("aluno"),"nota": request.form.get("nota")})
-
-	return render_template("sobre.html", registros=registros)
-
-@app.route('/filmes/<propriedade>')
-def filmes(propriedade):
-	if propriedade == 'populares':
-		url = "https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=e1f0350b7743692640280055df5d89aa"
-	elif propriedade == "kids":
-		url = "https://api.themoviedb.org/3/discover/movie?certification_country=US&certification.lte=G&sort_by=popularity.desc&api_key=e1f0350b7743692640280055df5d89aa"
-	elif propriedade == "2010":
-		url = "https://api.themoviedb.org/3/discover/movie?primary_release_year=2010&sort_by=vote_average.desc&api_key=e1f0350b7743692640280055df5d89aa"
-	elif propriedade == "drama":
-		url = "https://api.themoviedb.org/3/discover/movie?with_genres=18&sort_by=vote_average.desc&vote_count.gte=10&api_key=e1f0350b7743692640280055df5d89aa"	
-	elif propriedade == "tom_cruize":
-		url="https://api.themoviedb.org/3/discover/movie?with_genres=878&with_cast=500&sort_by=vote_average.desc&api_key=e1f0350b7743692640280055df5d89aa"
-
-	resposta = urllib.request.urlopen(url)
-	dados = resposta.read()
-	jsondata = json.loads(dados)
-
-	return render_template("filmes.html", filmes=jsondata['results'])
-
-if __name__ =="__main__":	
+if __name__ =="__main__":
+	db.create_all()
 	app.run(debug=True)
+

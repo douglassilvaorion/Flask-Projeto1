@@ -1,19 +1,39 @@
 {% extends 'base.html' %}
 {% block conteudo %}
-<h2 style="text-align: center;">Lista de Frutas</h2>
+
+<h2 style="text-align: center;">Contas</h2>
 <hr>
 <ul class="list-group">
 	{% for fruta in frutas %}
 		<li class="list-group-item">{{fruta}}</li>
 	{% endfor %}
-	<form action="{{url_for('principal')}}" method="POST">
-		
-		<div class="form-group">
-			<label for="exemploFruta" id="exemploFruta">Fruta</label>
-			<input class="form-control" type="text" name="fruta" placeholder="Digite o nome de uma fruta">			
-		</div>
-		<br>
-		<button class="btn btn-success">Adicionar</button>
-	</form>
+	
+	<table class="table table-bordered table-hover">
+		<thead >
+			<tr>
+				<th>ID</th>
+				<th>Name</th>
+				<th>Party</th>
+				<th>State</th>
+				<th>Legislature ID</th>
+				<th>Photo URL</th>
+				<th>Email</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for deputados in deputados %}
+			<tr>
+				<td>{{deputados.id}}</td>
+				<td>{{deputados.nome}}</td>
+				<td>{{deputados.partido}}</td>
+				<td>{{deputados.estado}}</td>
+				<td>{{deputados.legendaid}}</td>
+				<td><img src={{deputados.fotourl}} height="80" width="80"> </td>
+				<td>{{deputados.email}}</td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+
 </ul>
 {% endblock conteudo %}
