@@ -13,49 +13,58 @@ app.app_context().push()
 db = SQLAlchemy(app)
 
 ##criando estrutura do banco de dados
-class deputados(db.Model):
-	id = db.Column(db.Integer, primary_key=True)  
-	nome = db.Column(db.String(100))
-	partido = db.Column(db.String(20))
-	estado = db.Column(db.String(2))
-	legendaid = db.Column(db.Integer)
-	fotourl = db.Column(db.String(100))
-	email = db.Column(db.String(200))
-	
-	def __init__(self, nome, partido, estado, legendaid, fotourl, email):
-		self.nome = nome
-		self.partido = partido
-		self.estado = estado
-		self.legendaid = legendaid
-		self.fotourl = fotourl
-		self.email = email
-
+##Montagem da tabela Accounts
+class accounts(db.Model):
+	code = db.Column(db.Integer, primary_key=True)  
+	name = db.Column(db.String(200))
+	family_number = db.Column(db.Integer)
+	family_description = db.Column(db.String(200))
+	number = db.Column(db.Integer)
+	administrative_unit_code = db.Column(db.Integer)
+		
+	def __init__(self, code, name, family_number, family_description, number, administrative_unit_code):
+		self.code = code
+		self.name = name
+		self.family_number = family_number
+		self.family_description = family_description
+		self.number = number
+		self.administrative_unit_code = administrative_unit_code
+		
 #Fim da Montagem de Dados do Banco
 
 #Inicia Busca de Dados API
-url        = 'https://dadosabertos.camara.leg.br/api/v2/deputados'
-parametros = {}
-resposta   = requests.request("GET", url, params=parametros)
-objetos    = json.loads(resposta.text)
-dados      = objetos['dados']
+url = "https://wapi.autotrac-online.com.br/sandboxaticapi/v1/accounts"
+payload = {}
+files={}
+headers = {
+  'Authorization': 'Basic c3Vwb3J0ZUBhbWF6b246anVlekAyMDE3',
+  'Cookie': 'TS01f4576b=01325e1fda423838059e1ff009030f3383a152900d8347161a61e4dbff94f240131947b0aa9d0b66603b9384f73359519a2e58691c'}
+response = requests.request("GET", url, headers=headers, data=payload, files=files)
+objetos    = json.loads(response.text)
+dados      = objetos
 
 df = pd.DataFrame(dados)
 
 for col in df.columns:
-  df[col] = df[col].apply(str)
-#Fim tratamento dos dados
-
-#Leitura dos dados e Gravação no Banco de dados
+   df[col] = df[col].apply(str)
 
 for i in df.index:
-	
-	deputado = deputados(df['nome'][i], df['siglaPartido'][i], df['siglaUf'][i], df['idLegislatura'][i],df['urlFoto'][i],df['email'][i])
-	db.session.add(deputado)
-	db.session.commit()
+	#Verifica se o código já existe:
+	if accounts.query.filter_by(code=df['Code'][i]).first():
+		print('Registro já existe')
+	else:
+		account = accounts(	df['Code'][i],
+					 		df['Name'][i],
+							df['FamilyNumber'][i],
+							df['FamilyDescription'][i],
+							df['Number'][i],
+							df['AdministrativeUnitCode'][i])
+		db.session.add(account)
+		db.session.commit()
   
-@app.route('/', methods=["GET", "POST"])
+@app.route('/contas', methods=["GET", "POST"])
 def principal():	
-	return render_template("index.html", deputados=deputados.query.all())
+	return render_template("contas.html", accounts=accounts.query.all())
 
 if __name__ =="__main__":
 	db.create_all()

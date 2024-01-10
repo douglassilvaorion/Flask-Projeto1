@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block conteudo %}
+
+<h2 style="text-align: center;">Contas</h2>
+<hr>
+<ul class="list-group">
+	{% for fruta in frutas %}
+		<li class="list-group-item">{{fruta}}</li>
+	{% endfor %}
+	
+	<table class="table table-bordered table-hover">
+		<thead >
+			<tr>
+				<th>Codigo</th>
+				<th>Nome</th>
+				<th>Familia</th>
+				<th>Familia Descrição</th>
+				<th>Numero</th>
+				<th>Adm Un Codigo</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for accounts in accounts %}
+			<tr>
+				<td>{{accounts.code}}</td>
+				<td>{{accounts.name}}</td>
+				<td>{{accounts.family_number}}</td>
+				<td>{{accounts.family_description}}</td>
+				<td>{{accounts.number}}</td>
+				<td>{{accounts.administrative_unit_code}}</td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+
+</ul>
+{% endblock conteudo %}
