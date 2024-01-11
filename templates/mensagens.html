@@ -12,24 +12,42 @@
 		<thead >
 			<tr>
 				<th>ID</th>
-				<th>Name</th>
-				<th>Party</th>
-				<th>State</th>
-				<th>Legislature ID</th>
-				<th>Photo URL</th>
-				<th>Email</th>
+				<th>Numero Conta</th>
+				<th>Endereco</th>
+				<th>Prioridade</th>
+				<th>GRMN</th>
+				<th>Ignição</th>
+				<th>M Numero</th>
+				<th>M Versão</th>				
+				<th>Mensagem Sub Time</th>
+				<th>Mensagem Texto</th>
+				<th>Data-Hora</th>
+				<th>Latitude</th>
+				<th>Longitude</th>
+				<th>Posição Hora</th>
+				<th>Marcação</th>
+				<th>Canal de Transmissão</th>
 			</tr>
 		</thead>
 		<tbody>
-			{% for deputados in deputados %}
+			{% for messages in messages %}
 			<tr>
-				<td>{{deputados.id}}</td>
-				<td>{{deputados.nome}}</td>
-				<td>{{deputados.partido}}</td>
-				<td>{{deputados.estado}}</td>
-				<td>{{deputados.legendaid}}</td>
-				<td><img src={{deputados.fotourl}} height="80" width="80"> </td>
-				<td>{{deputados.email}}</td>
+				<td>{{messages.id}}</td>
+				<td>{{messages.accountnumber}}</td>
+				<td>{{messages.vehicleaddress}}</td>
+				<td>{{messages.priority}}</td>				
+				<td>{{messages.grmn}}</td>				
+				<td>{{messages.ignition}}</td>
+				<td>{{messages.macronumber}}</td>
+				<td>{{messages.macroversion}}</td>				
+				<td>{{messages.msgsubtype}}</td>
+				<td>{{messages.messagetext}}</td>
+				<td>{{messages.messagetime}}</td>				
+				<td>{{messages.latitude}}</td>
+				<td>{{messages.longitude}}</td>
+				<td>{{messages.positiontime}}</td>
+				<td>{{messages.landmark}}</td>
+				<td>{{messages.transmissionchannel}}</td>
 			</tr>
 			{% endfor %}
 		</tbody>
