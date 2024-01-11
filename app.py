@@ -209,7 +209,7 @@ def mensagens():
 	return render_template("mensagens.html", messages=messages.query.all())
 
 #Roda para Posição de Veiculos
-@app.route('/posicao', methods=["GET", "POST"])
+@app.route('/', methods=["GET", "POST"])
 def posicao():
 
 	url = "https://wapi.autotrac-online.com.br/sandboxaticapi/v1/accounts/119/vehicles/652/positions"

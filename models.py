@@ -1,4 +1,4 @@
-from app import db
+from database import db
 
 class accounts(db.Model):
 
@@ -18,3 +18,6 @@ class accounts(db.Model):
 		self.family_description = family_description
 		self.number = number
 		self.administrative_unit_code = administrative_unit_code
+
+	def __repr__(self):
+		return "Contas: {}".format(self.code)
