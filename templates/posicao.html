@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block conteudo %}
 
-<h2 style="text-align: center;">Contas</h2>
+<h2 style="text-align: center;">Posição de Veiculos</h2>
 <hr>
 <ul class="list-group">
 	{% for fruta in frutas %}
@@ -11,25 +11,49 @@
 	<table class="table table-bordered table-hover">
 		<thead >
 			<tr>
-				<th>ID</th>
-				<th>Name</th>
-				<th>Party</th>
-				<th>State</th>
-				<th>Legislature ID</th>
-				<th>Photo URL</th>
-				<th>Email</th>
+				<th>Num Conta</th>
+				<th>Veiculo</th>
+				<th>Veiculo End</th>
+				<th>Ignição</th>
+				<th>Velocidade</th>
+				<th>Odometro</th>
+				<th>Hora Med</th>
+				<th>Latitude</th>
+				<th>Longitude</th>
+				<th>Marcação</th>
+				<th>UF</th>
+				<th>Pais</th>
+				<th>Hora Posi</th>
+				<th>Direção</th>
+				<th>GPS</th>
+				<th>Distancia</th>
+				<th>Hora Rec</th>
+				<th>Canal Tra</th>
+				<th>Cidade</th>
 			</tr>
 		</thead>
 		<tbody>
-			{% for deputados in deputados %}
+			{% for vehiclespositions in vehiclespositions %}
 			<tr>
-				<td>{{deputados.id}}</td>
-				<td>{{deputados.nome}}</td>
-				<td>{{deputados.partido}}</td>
-				<td>{{deputados.estado}}</td>
-				<td>{{deputados.legendaid}}</td>
-				<td><img src={{deputados.fotourl}} height="80" width="80"> </td>
-				<td>{{deputados.email}}</td>
+				<td>{{vehiclespositions.accountnumber}}</td>
+				<td>{{vehiclespositions.vehiclename}}</td>
+				<td>{{vehiclespositions.vehicleaddress}}</td>
+				<td>{{vehiclespositions.vehicleignition}}</td>
+				<td>{{vehiclespositions.velocity}}</td>
+				<td>{{vehiclespositions.odometer}}</td>
+				<td>{{vehiclespositions.hourmeter}}</td>
+				<td>{{vehiclespositions.latitude}}</td>
+				<td>{{vehiclespositions.longitude}}</td>
+				<td>{{vehiclespositions.landmark}}</td>
+				<td>{{vehiclespositions.uf}}</td>
+				<td>{{vehiclespositions.countrydescription}}</td>
+				<td>{{vehiclespositions.positionTime}}</td>
+				<td>{{vehiclespositions.direction}}</td>
+				<td>{{vehiclespositions.directionGPS}}</td>
+				<td>{{vehiclespositions.distance}}</td>
+				<td>{{vehiclespositions.receivedtime}}</td>
+				<td>{{vehiclespositions.transmissionchannel}}</td>
+				<td>{{vehiclespositions.county}}</td>				
 			</tr>
 			{% endfor %}
 		</tbody>
