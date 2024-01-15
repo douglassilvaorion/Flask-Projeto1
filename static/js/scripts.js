@@ -24,3 +24,8 @@ window.addEventListener('DOMContentLoaded', event => {
     }
 
 });
+
+function AbrirModal(){
+    const modal = document.getElementById('janela-modal')
+    modal.classList.add(open);
+}
