@@ -11,7 +11,8 @@
 				<th>Nome</th>
 				<th>Endereço</th>				
 				<th>Autorizado</th>
-				<th>Ação</th>
+				<th align="center">Ação</th>
+				<th align="center">Mensagens</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -21,9 +22,13 @@
 				<td>{{vehicles.name}}</td>
 				<td>{{vehicles.address}}</td>
 				<td>{{vehicles.authorization}}</td>
-				<td>
-					<a href="{{vehicles.code}}/auth_vehicles" class="btn btn-secondary btn-xs">Autorizar</a>
-				</td>							
+				<td align="center">
+					<a href="{{vehicles.code}}/auth_vehicles" type="button"  class="btn btn-primary">Autorizar</a>
+				</td>
+				<td align="center">
+					<!-- <a href="/mensagens?code={{vehicles.code}}&addess={{vehicles.address}}" type="button"  class="btn btn-warning">Mensagens</a> -->
+					<a href="{{vehicles.code}}/{{vehicles.address}}/mensagens" type="button"  class="btn btn-warning">Mensagens</a>
+				</td>
 			</tr>
 			{% endfor %}
 		</tbody>

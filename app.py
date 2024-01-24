@@ -173,10 +173,11 @@ def contas():
 			db.session.commit()
 	return render_template("contas.html", accounts=accounts.query.all())
 
-@app.route('/mensagens', methods=["GET", "POST"])
-def mensagens():
+@app.route('/<int:code>/<int:address>/mensagens/', methods=["GET", "POST"])
+def mensagens(code,address):
 
-	url = "https://aapi3.autotrac-online.com.br/aticapi/v1/accounts/11035/vehicles/472187/returnmessages"
+	url = "https://aapi3.autotrac-online.com.br/aticapi/v1/accounts/11035/vehicles/"+str(code)+"/returnmessages"
+	print(url)
 	payload = {}
 	files={}
 	headers = {	'Authorization': 'Basic suporte@amazon:juez@2017',
@@ -185,18 +186,17 @@ def mensagens():
 
 	response = requests.request("GET", url, headers=headers, data=payload, files=files)
 	objetos    = json.loads(response.text)
-	dados      = objetos['Data']
+	if (response.status_code) == 200:
+		dados      = objetos['Data']
+		
+		df = pd.DataFrame(dados)
 
-	df = pd.DataFrame(dados)
-
-	for col in df.columns:
-		df[col] = df[col].apply(str)
-
-	for i in df.index:
-		if messages.query.filter_by(id=df['ID'][i]).first():
-			print('Registro já existe')
-		else:
-			menssage = messages(df['ID'][i],
+		for col in df.columns:
+			df[col] = df[col].apply(str)
+			
+			for i in df.index:
+				if not messages.query.filter_by(id=df['ID'][i]).first():
+					menssage = messages(df['ID'][i],
 						df['AccountNumber'][i],
 						df['VehicleAddress'][i],
 						df['Priority'][i],
@@ -213,67 +213,17 @@ def mensagens():
 						df['PositionTime'][i],
 						df['Landmark'][i],
 						df['TransmissionChannel'][i])
-			db.session.add(menssage)
-			db.session.commit()
+					db.session.add(menssage)
+					db.session.commit()
 
 			#Recurso de Paginação
 			# page = request.args.get('page', 1, type=int)
 			# per_page = 4
 			# #todos_messages = messages.query.paginate(page, per_page)
 
-	return render_template("mensagens.html", messages=messages.query.all())
+	return render_template("mensagens.html", messages=messages.query.filter_by(vehicleaddress=address))
 
 #Roda para Posição de Veiculos
-@app.route('/', methods=["GET", "POST"])
-def posicao():
-
-	url = "https://wapi.autotrac-online.com.br/sandboxaticapi/v1/accounts/119/vehicles/652/positions"
-
-	payload = {}
-	files={}
-	headers = {
-		'Authorization': 'Basic c3Vwb3J0ZUBhbWF6b246anVlekAyMDE3',
-		'Cookie': 'TS01f4576b=01325e1fda146fa5d61e3161a4a942033b06f4f75f1cf0eba85633f3ffc6cbf58f8eca1d8e0290b01a23e84ae722b3c13bab27ff7d' }
-	
-	response = requests.request("GET", url, headers=headers, data=payload, files=files)
-	objetos    = json.loads(response.text)
-	dados      = objetos['Data']
-
-	df = pd.DataFrame(dados)
-
-	for col in df.columns:
-		df[col] = df[col].apply(str)
-	
-	for i in df.index:
-		if messages.query.filter_by(accountnumber=df['AccountNumber'][i]).first():
-			print('Registro já existe')
-		else:
-			vehiclesposition = vehiclespositions(df['AccountNumber'][i],
-										df['VehicleName'][i],
-										df['VehicleAddress'][i],
-										df['VehicleIgnition'][i],
-										df['Velocity'][i],
-										df['Odometer'][i],
-										df['Hourmeter'][i],
-										df['Latitude'][i],
-										df['Longitude'][i],
-										df['Landmark'][i],
-										df['UF'][i],
-										df['CountryDescription'][i],
-										df['PositionTime'][i],
-										df['Direction'][i],
-										df['DirectionGPS'][i],
-										df['Distance'][i],
-										df['ReceivedTime'][i],
-										df['TransmissionChannel'][i],
-										df['County'][i]	)
-
-			db.session.add(vehiclesposition)
-			db.session.commit()
-
-	response = requests.request("GET", url, headers=headers, data=payload)
-
-	return render_template("posicao.html", vehiclespositions=vehiclespositions.query.all())
 
 @app.route('/veiculos', methods=["GET", "POST"])
 def veiculos():
@@ -294,12 +244,9 @@ def veiculos():
 
 	for col in df.columns:
 		df[col] = df[col].apply(str)	
-	print(df)
-
+	
 	for i in df.index:
-		if vehicles.query.filter_by(code = df['Code'][i]).first():
-			print('Registro já existe')
-		else:	
+		if not vehicles.query.filter_by(code = df['Code'][i]).first():			
 			vehicle = vehicles(	df['Code'][i],
 								df['Name'][i],
 								df['Address'][i],
