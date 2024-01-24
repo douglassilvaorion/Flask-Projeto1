@@ -1,6 +1,6 @@
 import requests, json
 import pandas as pd
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for, flash
 from urllib.parse import urlparse
 from flask_sqlalchemy import SQLAlchemy
 
@@ -120,6 +120,22 @@ class vehiclespositions(db.Model):
 		self.receivedtime = receivedtime
 		self.transmissionchannel = transmissionchannel
 		self.county = county
+
+class vehicles(db.Model):
+
+	__tablename__ = "vehicles"
+	code = db.Column(db.Integer, primary_key=True)
+	name = db.Column(db.String)
+	address = db.Column(db.String)
+	tripname = db.Column(db.String)
+	authorization = db.Column(db.Boolean)
+
+	def __init__(self, code, name, address, tripname,authorization):
+		self.code = code
+		self.name = name
+		self.address = address
+		self.tripname = tripname
+		self.authorization = authorization
 		
 #Fim da Montagem de Dados do Banco
   
@@ -127,12 +143,11 @@ class vehiclespositions(db.Model):
 def contas():	
 	
 	#Inicia Busca de Dados API
-	url = "https://wapi.autotrac-online.com.br/sandboxaticapi/v1/accounts"
+	url = "https://aapi3.autotrac-online.com.br/aticapi/v1/accounts"
 	payload = {}
 	files={}
 	headers = {
-	'Authorization': 'Basic c3Vwb3J0ZUBhbWF6b246anVlekAyMDE3',
-	'Cookie': 'TS01f4576b=01325e1fda423838059e1ff009030f3383a152900d8347161a61e4dbff94f240131947b0aa9d0b66603b9384f73359519a2e58691c'}
+	'Authorization': 'Basic atic@amazon:api@2024', 'Ocp-Apim-Subscription-Key': '011cb03f29064101858f71356ac6f6e5','Content-Type': 'application/json'}
 	response = requests.request("GET", url, headers=headers, data=payload, files=files)
 	objetos    = json.loads(response.text)
 	dados      = objetos
@@ -161,12 +176,12 @@ def contas():
 @app.route('/mensagens', methods=["GET", "POST"])
 def mensagens():
 
-	url = "https://wapi.autotrac-online.com.br/sandboxaticapi/v1/accounts/11/vehicles/651/returnmessages"
+	url = "https://aapi3.autotrac-online.com.br/aticapi/v1/accounts/11035/vehicles/472187/returnmessages"
 	payload = {}
 	files={}
-	headers = {
-  	'Authorization': 'Basic c3Vwb3J0ZUBhbWF6b246anVlekAyMDE3',
-  	'Cookie': 'TS01f4576b=01325e1fda33a063404ba6946937f1da03f1aea65fd080a1c7db1dd57cfb82803618df4f926084704c6324aa4fa124398d0a056acc'}
+	headers = {	'Authorization': 'Basic suporte@amazon:juez@2017',
+  				'Ocp-Apim-Subscription-Key': '011cb03f29064101858f71356ac6f6e5',
+  				'Content-Type': 'application/json'}
 
 	response = requests.request("GET", url, headers=headers, data=payload, files=files)
 	objetos    = json.loads(response.text)
@@ -259,6 +274,61 @@ def posicao():
 	response = requests.request("GET", url, headers=headers, data=payload)
 
 	return render_template("posicao.html", vehiclespositions=vehiclespositions.query.all())
+
+@app.route('/veiculos', methods=["GET", "POST"])
+def veiculos():
+
+	url = "https://aapi3.autotrac-online.com.br/aticapi/v1/accounts/11035/vehicles?_limit=10000&_offset=1"
+
+	payload = {}
+	files={}
+	headers = {
+		  'Authorization': 'Basic atic@amazon:api@2024',
+			  'Ocp-Apim-Subscription-Key': '011cb03f29064101858f71356ac6f6e5'}
+	
+	response = requests.request("GET", url, headers=headers, data=payload, files=files)
+	objetos    = json.loads(response.text)
+	dados      = objetos['Data']
+
+	df = pd.DataFrame(dados)
+
+	for col in df.columns:
+		df[col] = df[col].apply(str)	
+	print(df)
+
+	for i in df.index:
+		if vehicles.query.filter_by(code = df['Code'][i]).first():
+			print('Registro já existe')
+		else:	
+			vehicle = vehicles(	df['Code'][i],
+								df['Name'][i],
+								df['Address'][i],
+								df['TripName'][i],
+								False)	
+			db.session.add(vehicle)
+			db.session.commit()
+
+
+	return render_template("veiculos.html", vehicles = vehicles.query.all())
+
+@app.route('/<int:code>/auth_vehicles', methods=["GET","POST"])
+def auth_vehicles(code):
+	
+	#Busca dados de veiculo
+	vehicle = vehicles.query.filter_by(code = code).first()
+	if request.method == 'POST':				
+		authorization = True
+
+		vehicles.query.filter_by(code = code).update({'authorization':authorization})
+		db.session.commit()
+		return redirect(url_for('auth_vehicles_success'))
+
+	return render_template('auth_vehicles.html', vehicle=vehicle)
+
+@app.route('/auth_vehicles_success', methods=["GET","POST"])
+def auth_vehicles_success():
+
+	return render_template('auth_vehicles_success.html')
 
 @app.errorhandler(401)
 def unauthorized_page(error):

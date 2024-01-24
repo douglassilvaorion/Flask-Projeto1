@@ -3,30 +3,17 @@
 
 <h2 style="text-align: center;">Mensagens</h2>
 <hr>
-<ul class="list-group">
-	{% for fruta in frutas %}
-		<li class="list-group-item">{{fruta}}</li>
-	{% endfor %}
-	
+
 	<table class="table table-bordered table-hover">
 		<thead >
 			<tr>
 				<th>ID</th>
-				<th>Numero Conta</th>
-				<th>Endereco</th>
-				<th>Prioridade</th>
-				<th>GRMN</th>
-				<th>Ignição</th>
-				<th>M Numero</th>
-				<th>M Versão</th>				
-				<th>Mensagem Sub Time</th>
-				<th>Mensagem Texto</th>
+				<th>Conta</th>
 				<th>Data-Hora</th>
 				<th>Latitude</th>
 				<th>Longitude</th>
 				<th>Posição Hora</th>
-				<th>Marcação</th>
-				<th>Canal de Transmissão</th>
+				<th>Marcação</th>				
 			</tr>
 		</thead>
 		<tbody>
@@ -34,24 +21,14 @@
 			<tr>
 				<td>{{messages.id}}</td>
 				<td>{{messages.accountnumber}}</td>
-				<td>{{messages.vehicleaddress}}</td>
-				<td>{{messages.priority}}</td>				
-				<td>{{messages.grmn}}</td>				
-				<td>{{messages.ignition}}</td>
-				<td>{{messages.macronumber}}</td>
-				<td>{{messages.macroversion}}</td>				
-				<td>{{messages.msgsubtype}}</td>
-				<td>{{messages.messagetext}}</td>
 				<td>{{messages.messagetime}}</td>				
 				<td>{{messages.latitude}}</td>
 				<td>{{messages.longitude}}</td>
 				<td>{{messages.positiontime}}</td>
-				<td>{{messages.landmark}}</td>
-				<td>{{messages.transmissionchannel}}</td>
+				<td>{{messages.landmark}}</td>				
 			</tr>
 			{% endfor %}
 		</tbody>
 	</table>
 
-</ul>
 {% endblock conteudo %}

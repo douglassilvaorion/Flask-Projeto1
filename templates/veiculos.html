@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block conteudo %}
+
+<h2 style="text-align: center;">Cadastro de Veiculos</h2>
+<hr>
+
+	<table class="table table-bordered table-hover">
+		<thead >
+			<tr>
+				<th>Codigo</th>
+				<th>Nome</th>
+				<th>Endereço</th>				
+				<th>Autorizado</th>
+				<th>Ação</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for vehicles in vehicles %}
+			<tr>
+				<td>{{vehicles.code}}</td>
+				<td>{{vehicles.name}}</td>
+				<td>{{vehicles.address}}</td>
+				<td>{{vehicles.authorization}}</td>
+				<td>
+					<a href="{{vehicles.code}}/auth_vehicles" class="btn btn-secondary btn-xs">Autorizar</a>
+				</td>							
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table> 
+
+
+{% endblock conteudo %}
