@@ -173,7 +173,7 @@ def contas():
 			db.session.commit()
 	return render_template("contas.html", accounts=accounts.query.all())
 
-@app.route('/<int:code>/<int:address>/mensagens/', methods=["GET", "POST"])
+@app.route('/mensagens/<int:code>/<int:address>/', methods=["GET", "POST"])
 def mensagens(code,address):
 
 	url = "https://aapi3.autotrac-online.com.br/aticapi/v1/accounts/11035/vehicles/"+str(code)+"/returnmessages"
