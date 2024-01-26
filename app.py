@@ -186,6 +186,7 @@ def mensagens(code,address):
 
 	response = requests.request("GET", url, headers=headers, data=payload, files=files)
 	objetos    = json.loads(response.text)
+	print(response.status_code)
 	if (response.status_code) == 200:
 		dados      = objetos['Data']
 		
@@ -220,8 +221,10 @@ def mensagens(code,address):
 			# page = request.args.get('page', 1, type=int)
 			# per_page = 4
 			# #todos_messages = messages.query.paginate(page, per_page)
-
-	return render_template("mensagens.html", messages=messages.query.filter_by(vehicleaddress=address))
+			return render_template("mensagens.html", messages=messages.query.filter_by(vehicleaddress=address))
+	elif (response.status_code) == 422:
+			return render_template("non_actorized_vehicle.html")
+				
 
 #Roda para Posição de Veiculos
 
