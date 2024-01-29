@@ -187,8 +187,9 @@ def mensagens():
 		df[col] = df[col].apply(str)	
 
 	for n in df.index:
-		
+		print('Consulta Veiculo: ' + df['VehicleCode'][n])
 		url = "https://aapi3.autotrac-online.com.br/aticapi/v1/accounts/11035/vehicles/"+df['VehicleCode'][n]+"/returnmessages"
+		
 		payload = {}
 		files={}
 		headers = {	'Authorization': 'Basic suporte@amazon:juez@2017', 'Ocp-Apim-Subscription-Key': '011cb03f29064101858f71356ac6f6e5', 'Content-Type': 'application/json'}
@@ -225,10 +226,10 @@ def mensagens():
 					
 					db.session.add(menssage)
 					db.session.commit()		
-
-			return jsonify({'Data':objetos})
-		elif (response.status_code) == 422:
-			return jsonify({'Data':objetos})
+	
+	return jsonify({'Data':objetos})
+		# elif (response.status_code) == 422:
+		# 	return jsonify({'Data':objetos})
 	
 @app.errorhandler(401)
 def unauthorized_page(error):
