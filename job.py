@@ -1,6 +1,6 @@
 import requests, json
 import pandas as pd
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, jsonify
 from urllib.parse import urlparse
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
@@ -74,54 +74,6 @@ class messages(db.Model):
 		self.landmark = landmark
 		self.transmissionchannel = transmissionchannel
 
-class vehiclespositions(db.Model):
-
-	__tablename__ = "vehiclespositions"
-	
-	id = db.Column(db.Integer, primary_key=True)
-	accountnumber = db.Column(db.String(200))
-	vehiclename = db.Column(db.String(200))
-	vehicleaddress = db.Column(db.Integer)
-	vehicleignition = db.Column(db.Integer)
-	velocity = db.Column(db.Integer)
-	odometer = db.Column(db.Integer)
-	hourmeter = db.Column(db.Integer)
-	latitude = db.Column(db.Integer)
-	longitude = db.Column(db.Integer)
-	landmark = db.Column(db.String(250))
-	uf = db.Column(db.String(2))
-	countrydescription = db.Column(db.String(150))
-	positionTime = db.Column(db.String(150))
-	direction = db.Column(db.Integer)
-	directionGPS = db.Column(db.Integer)
-	distance = db.Column(db.Integer)
-	receivedtime = db.Column(db.String(150))
-	transmissionchannel = db.Column(db.Integer)
-	county = db.Column(db.String(150))
-
-	def __init__(self, accountnumber, vehiclename, vehicleaddress, vehicleignition, velocity, 
-			  odometer, hourmeter, latitude, longitude, landmark, uf, countrydescription, positionTime, 
-			  direction, directionGPS, distance, receivedtime, transmissionchannel, county ):
-		self.accountnumber = accountnumber
-		self.vehiclename = vehiclename
-		self.vehicleaddress = vehicleaddress
-		self.vehicleignition = vehicleignition
-		self.velocity = velocity
-		self.odometer = odometer
-		self.hourmeter = hourmeter
-		self.latitude = latitude
-		self.longitude = longitude
-		self.landmark = landmark
-		self.uf = uf
-		self.countrydescription = countrydescription
-		self.positionTime = positionTime
-		self.direction = direction
-		self.directionGPS = directionGPS
-		self.distance = distance
-		self.receivedtime = receivedtime
-		self.transmissionchannel = transmissionchannel
-		self.county = county
-
 class vehicles(db.Model):
 
 	__tablename__ = "vehicles"
@@ -161,9 +113,7 @@ def contas():
 	for i in df.index:
 		
 		#Verifica se o código já existe:
-		if accounts.query.filter_by(code=df['Code'][i]).first():
-			print('Registro já existe')
-		else:
+		if not accounts.query.filter_by(code=df['Code'][i]).first():
 			account = accounts(	df['Code'][i],
 								df['Name'][i],
 								df['FamilyNumber'][i],
@@ -172,60 +122,8 @@ def contas():
 								df['AdministrativeUnitCode'][i])
 			db.session.add(account)
 			db.session.commit()
-	return render_template("contas.html", accounts=accounts.query.all())
-
-@app.route('/mensagens/<int:code>/<int:address>/', methods=["GET", "POST"])
-def mensagens(code,address):
-
-	url = "https://aapi3.autotrac-online.com.br/aticapi/v1/accounts/11035/vehicles/"+str(code)+"/returnmessages"
-	print(url)
-	payload = {}
-	files={}
-	headers = {	'Authorization': 'Basic suporte@amazon:juez@2017',
-  				'Ocp-Apim-Subscription-Key': '011cb03f29064101858f71356ac6f6e5',
-  				'Content-Type': 'application/json'}
-
-	response = requests.request("GET", url, headers=headers, data=payload, files=files)
-	objetos    = json.loads(response.text)
 	
-	if (response.status_code) == 200:
-		dados      = objetos['Data']
-		
-		df = pd.DataFrame(dados)
-
-		for col in df.columns:
-			df[col] = df[col].apply(str)
-		
-			for i in df.index:
-				if not messages.query.filter_by(id=df['ID'][i]).first():
-					menssage = messages(df['ID'][i],
-						df['AccountNumber'][i],
-						df['VehicleAddress'][i],
-						df['Priority'][i],
-						df['Grmn'][i],
-						df['Ignition'][i],
-						df['MacroNumber'][i],
-						df['MacroVersion'][i],
-						df['BinaryDataType'][i],
-						df['MsgSubType'][i],
-						df['MessageTime'][i],
-						df['MessageText'][i],
-						df['Latitude'][i],
-						df['Longitude'][i],
-						df['PositionTime'][i],
-						df['Landmark'][i],
-						df['TransmissionChannel'][i])
-					db.session.add(menssage)
-					db.session.commit()
-		
-			#Recurso de Paginação
-			# page = request.args.get('page', 1, type=int)
-			# per_page = 4
-			# #todos_messages = messages.query.paginate(page, per_page)
-			return render_template("mensagens.html", messages=messages.query.filter_by(vehicleaddress=address))
-	elif (response.status_code) == 422:
-			return render_template("non_actorized_vehicle.html")
-				
+	return jsonify({'Dados':objetos})		
 
 #Roda para Posição de Veiculos
 
@@ -260,7 +158,8 @@ def veiculos():
 			db.session.commit()
 
 
-	return render_template("veiculos.html", vehicles = vehicles.query.all())
+	return jsonify(objetos)
+
 @app.route('/veiculos_autorizados')
 def veiculos_autorizados():
 
@@ -269,50 +168,68 @@ def veiculos_autorizados():
 	files={}
 	headers = { 'Authorization': 'Basic atic@amazon:api@2024', 'Ocp-Apim-Subscription-Key': '011cb03f29064101858f71356ac6f6e5', 'Content-Type': 'application/json' }
 	response = requests.request("GET", url, headers=headers, data=payload, files=files)
-	dados = response.text
+	objetos    = json.loads(response.text)
 
-	jsondata = json.loads(dados)
-	dados      = jsondata['Data']
+	return jsonify(objetos)
 
-	df = pd.DataFrame(dados)
+@app.route('/mensagens', methods=["GET", "POST"])
+def mensagens():
+
+	#Busca dados de veículos autorizados:
+	url = "http://127.0.0.1:5000/veiculos_autorizados"
+	response 	= requests.request("GET", url)
+	objetos    	= json.loads(response.text)
+	veiculos	= objetos['Data']
+	
+	df = pd.DataFrame(veiculos)
 
 	for col in df.columns:
 		df[col] = df[col].apply(str)	
 
-	# print(df['VehicleCode'])
-
-	return render_template('veiculos_autorizados.html',df=df)
-
-@app.route('/<int:code>/auth_vehicles', methods=["GET","POST"])
-def auth_vehicles(code):
-	
-	#Busca dados de veiculo
-	vehicle = vehicles.query.filter_by(code = code).first()
-	if request.method == 'POST':				
-		authorization = True
-
-		vehicles.query.filter_by(code = code).update({'authorization':authorization})
-		db.session.commit()
-		return redirect(url_for('auth_vehicles_success'))
-
-	return render_template('auth_vehicles.html', vehicle=vehicle)
-
-@app.route('/auth_vehicles_success/<int:code>', methods=["GET","POST"])
-def auth_vehicles_success(code):
-
-	#Leitura dos campos do Formulário
-	code = request.form.get('code')
-
-	if request.method == 'POST':
-		#Realiza autorização do veículo via API:
-		url = "https://aapi3.autotrac-online.com.br/aticapi/v1/accounts/11035/authorizedvehicle/" + str(code)
+	for i in df.index:
+		
+		url = "https://aapi3.autotrac-online.com.br/aticapi/v1/accounts/11035/vehicles/"+df['VehicleCode'][i]+"/returnmessages"
 		payload = {}
 		files={}
-		headers = { 'Authorization': 'Basic atic@amazon:api@2024', 'Ocp-Apim-Subscription-Key': '011cb03f29064101858f71356ac6f6e5', 'Content-Type': 'application/json' }
-		response = requests.request("POST", url, headers=headers, data=payload, files=files)
+		headers = {	'Authorization': 'Basic suporte@amazon:juez@2017', 'Ocp-Apim-Subscription-Key': '011cb03f29064101858f71356ac6f6e5', 'Content-Type': 'application/json'}
+		response = requests.request("GET", url, headers=headers, data=payload, files=files)
+		objetos    = json.loads(response.text)
+		
+		if (response.status_code) == 200:
+			dados      = objetos['Data']
+			
+			dw = pd.DataFrame(dados)
+			
+			for col in dw.columns:
+				dw[col] = dw[col].apply(str)
+				
+			for i in dw.index:
+				if not messages.query.filter_by(id=dw['ID'][i]).first():
+					menssage = messages(dw['ID'][i],
+						 				dw['AccountNumber'][i],
+										dw['VehicleAddress'][i],
+										dw['Priority'][i],
+										dw['Grmn'][i],
+										dw['Ignition'][i],
+										dw['MacroNumber'][i],
+										dw['MacroVersion'][i],
+										dw['BinaryDataType'][i],
+										dw['MsgSubType'][i],
+										dw['MessageTime'][i],
+										dw['MessageText'][i],
+										dw['Latitude'][i],
+										dw['Longitude'][i],
+										dw['PositionTime'][i],
+										dw['Landmark'][i],
+										dw['TransmissionChannel'][i])
+					
+					db.session.add(menssage)
+					db.session.commit()		
 
-	return render_template('auth_vehicles_success.html')
-
+			return jsonify({'Data':objetos})
+		elif (response.status_code) == 422:
+			return jsonify({'Data':objetos})
+	
 @app.errorhandler(401)
 def unauthorized_page(error):
     return render_template("errors/401.html"), 401

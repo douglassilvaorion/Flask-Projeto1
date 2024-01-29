@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block conteudo %}
+
+<h2 style="text-align: center;">Veiculos Autorizados</h2>
+<hr>
+
+	<table class="table table-bordered table-hover">
+		<thead >
+			<tr>
+				<th>Codigo</th>
+				<th>Nome</th>
+				<th>Endereço</th>				
+				<th>Autorizado</th>
+				<th align="center">Ação</th>				
+			</tr>
+		</thead>
+		<tbody>
+			{% for i in df %}
+			
+			<tr>
+				<td>{{df['VehicleAddress'][i]}}</td>				
+				<td>{{df['VehicleAddress'][i]}}</td>				
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table> 
+
+
+{% endblock conteudo %}
