@@ -47,7 +47,10 @@ def mensagens(code):
 		
 		df = pd.DataFrame(dados)
 
-		return render_template("mensagens.html", mensagem = df)
+	for col in df.columns:
+		df[col] = df[col].apply(str)	
+
+	return render_template("mensagens.html", len = len(objetos['Data']), mensagens = objetos['Data'] )
 
 #Roda para Posição de Veiculos
 @app.route('/veiculos', methods=["GET", "POST"])

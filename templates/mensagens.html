@@ -24,15 +24,15 @@
 			</tr>
 		</thead>
 		<tbody>
-			{% for messages in messages %}
+			{%for i in range(0, len)%} 
 			<tr>
-				<td>{{messages.id}}</td>
-				<td>{{messages.accountnumber}}</td>
-				<td>{{messages.messagetime}}</td>				
-				<td>{{messages.latitude}}</td>
-				<td>{{messages.longitude}}</td>
-				<td>{{messages.positiontime}}</td>
-				<td>{{messages.landmark}}</td>				
+				<td>{{messages[i]['ID']}}</td>
+				<td>{{messages[i]['AccountNumber']}}</td>
+				<td>{{messages[i]['MessageTime']}}</td>
+				<td>{{messages[i]['Latitude']}}</td>
+				<td>{{messages[i]['Longitude']}}</td>
+				<td>{{messages[i]['PositionTime']}}</td>
+				<td>{{messages[i]['Landmark']}}</td>						
 			</tr>
 			{% endfor %}
 		</tbody>
