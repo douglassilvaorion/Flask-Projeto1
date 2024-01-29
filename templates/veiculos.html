@@ -10,10 +10,9 @@
 			<tr>
 				<th>Codigo</th>
 				<th>Nome</th>
-				<th>Endereço</th>				
-				
+				<th>Endereço</th>							
 				<th align="center">Ação</th>
-				<th align="center">Mensagens</th>
+				
 			</tr>
 		</thead>
 		<tbody>
@@ -22,13 +21,14 @@
 			<tr>
 				<td>{{veiculos[i]['Code']}}</td>
 				<td>{{veiculos[i]['Name'][1:40]}}</td>
-				<td>{{veiculos[i]['Address']}}</td>
-				<td align="center">
+				<td>{{veiculos[i]['Address']}}</td>				
+				<td >
 					<a href="{{veiculos[i]['Code']}}/auth_vehicles" type="button"  class="btn btn-primary">Autorizar</a>
-				</td>
-				<td align="center">					
+					<a href="{{veiculos[i]['Code']}}/revoke_vehicles" type="button"  class="btn btn-danger">Revogar</a>
 					<a href="mensagens/{{veiculos[i]['Code']}}" type="button"  class="btn btn-warning">Mensagens</a>
-				</td> 
+				</td>
+				
+			
 			</tr>
 			{% endfor %}
 		</tbody>

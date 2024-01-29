@@ -100,7 +100,7 @@ def contas():
 	payload = {}
 	files={}
 	headers = {
-	'Authorization': 'Basic atic@amazon:api@2024', 'Ocp-Apim-Subscription-Key': '011cb03f29064101858f71356ac6f6e5','Content-Type': 'application/json'}
+	'Authorization': 'Basic suporte@amazon:juez@2017', 'Ocp-Apim-Subscription-Key': '011cb03f29064101858f71356ac6f6e5','Content-Type': 'application/json'}
 	response = requests.request("GET", url, headers=headers, data=payload, files=files)
 	objetos    = json.loads(response.text)
 	dados      = objetos
@@ -135,7 +135,7 @@ def veiculos():
 	payload = {}
 	files={}
 	headers = {
-		  'Authorization': 'Basic atic@amazon:api@2024',
+		  'Authorization': 'Basic suporte@amazon:juez@2017',
 			  'Ocp-Apim-Subscription-Key': '011cb03f29064101858f71356ac6f6e5'}
 	
 	response = requests.request("GET", url, headers=headers, data=payload, files=files)
@@ -166,7 +166,7 @@ def veiculos_autorizados():
 	url = "https://aapi3.autotrac-online.com.br/aticapi/v1/accounts/11035/authorizedvehicles?_limit=1000"
 	payload = {}
 	files={}
-	headers = { 'Authorization': 'Basic atic@amazon:api@2024', 'Ocp-Apim-Subscription-Key': '011cb03f29064101858f71356ac6f6e5', 'Content-Type': 'application/json' }
+	headers = { 'Authorization': 'Basic suporte@amazon:juez@2017', 'Ocp-Apim-Subscription-Key': '011cb03f29064101858f71356ac6f6e5','Content-Type': 'application/json'}
 	response = requests.request("GET", url, headers=headers, data=payload, files=files)
 	objetos    = json.loads(response.text)
 

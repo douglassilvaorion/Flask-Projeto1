@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block conteudo %}
+
+<h2 style="text-align: center;">Autorização de Veiculos</h2>
+<hr>
+
+{%- for mensagem in get_flashed_messages()  %}
+	<div class="alert alert-danger">
+		{{mensagem}}
+	</div>
+{%- endfor %}
+
+<form action="{{url_for('revoke_vehicles_success', code=vehicle.code)}}" method="POST" class="form-control">
+	
+	<label>Codigo</label>
+	<input class="form-control" type="text" name="code" value="{{vehicle.code}}" readonly>
+
+	
+	<label>Nome</label>
+	<input class="form-control" type="text" name="name" value="{{vehicle.name}}" readonly>
+	
+	
+	<label>Endereço</label>
+	<input class="form-control" type="text" name="address" value="{{vehicle.address}}" readonly>
+	
+	<br>
+	<button class=" btn btn-danger">Revogar</button>
+
+</form>
+
+{% endblock conteudo %}

@@ -32,9 +32,10 @@ class vehicles(db.Model):
 @app.route('/mensagens/<int:code>', methods=["GET", "POST"])
 def mensagens(code):
 
+	
 	url = "https://aapi3.autotrac-online.com.br/aticapi/v1/accounts/11035/vehicles/"+str(code)+"/returnmessages"	
 	payload = {}
-	files={}
+	files = {}
 	headers = {	'Authorization': 'Basic suporte@amazon:juez@2017',
   				'Ocp-Apim-Subscription-Key': '011cb03f29064101858f71356ac6f6e5',
   				'Content-Type': 'application/json'}
@@ -46,21 +47,23 @@ def mensagens(code):
 		dados      = objetos['Data']
 		
 		df = pd.DataFrame(dados)
-
-	for col in df.columns:
-		df[col] = df[col].apply(str)	
-
-	return render_template("mensagens.html", len = len(objetos['Data']), mensagens = objetos['Data'] )
+		
+		for col in df.columns:
+			df[col] = df[col].apply(str)
+		
+		return render_template("mensagens.html", len = len(objetos['Data']), messages = objetos['Data'] )
+	else:
+		return redirect(url_for('non_date_vehicle'))
 
 #Roda para Posição de Veiculos
 @app.route('/veiculos', methods=["GET", "POST"])
 def veiculos():
-
-	url = "https://aapi3.autotrac-online.com.br/aticapi/v1/accounts/11035/vehicles?_limit=10000&_offset=1"
+	
+	url = "https://aapi3.autotrac-online.com.br/aticapi/v1/accounts/11035/vehicles?_limit=1000"
 
 	payload = {}
 	files={}
-	headers = { 'Authorization': 'Basic atic@amazon:api@2024', 'Ocp-Apim-Subscription-Key': '011cb03f29064101858f71356ac6f6e5'}
+	headers = { 'Authorization': 'Basic suporte@amazon:juez@2017', 'Ocp-Apim-Subscription-Key': '011cb03f29064101858f71356ac6f6e5','Content-Type': 'application/json'}
 	
 	response = requests.request("GET", url, headers=headers, data=payload, files=files)
 	objetos    = json.loads(response.text)
@@ -80,7 +83,7 @@ def veiculos_autorizados():
 
 	payload = {}
 	files={}
-	headers = { 'Authorization': 'Basic atic@amazon:api@2024', 'Ocp-Apim-Subscription-Key': '011cb03f29064101858f71356ac6f6e5', 'Content-Type': 'application/json' }
+	headers = { 'Authorization': 'Basic suporte@amazon:juez@2017', 'Ocp-Apim-Subscription-Key': '011cb03f29064101858f71356ac6f6e5', 'Content-Type': 'application/json' }
 
 	response = requests.request("GET", url, headers=headers, data=payload, files=files)
 	objetos    = json.loads(response.text)
@@ -117,10 +120,47 @@ def auth_vehicles_success(code):
 		url = "https://aapi3.autotrac-online.com.br/aticapi/v1/accounts/11035/authorizedvehicle/" + str(code)
 		payload = {}
 		files={}
-		headers = { 'Authorization': 'Basic atic@amazon:api@2024', 'Ocp-Apim-Subscription-Key': '011cb03f29064101858f71356ac6f6e5', 'Content-Type': 'application/json' }
+		headers = { 'Authorization': 'Basic suporte@amazon:juez@2017', 'Ocp-Apim-Subscription-Key': '011cb03f29064101858f71356ac6f6e5', 'Content-Type': 'application/json' }
 		response = requests.request("POST", url, headers=headers, data=payload, files=files)
 
 	return render_template('auth_vehicles_success.html')
+
+@app.route('/<int:code>/revoke_vehicles', methods=["GET","POST"])
+def revoke_vehicles(code):	
+	#Busca dados de veiculo
+	vehicle = vehicles.query.filter_by(code = code).first()
+	if request.method == 'POST':				
+		authorization = False
+
+		vehicles.query.filter_by(code = code).update({'authorization':authorization})
+		db.session.commit()
+		return redirect(url_for('revoke_vehicles_success'))
+
+	return render_template('revoke_vehicles.html', vehicle=vehicle)
+
+@app.route('/revoke_vehicles_success/<int:code>', methods=["GET","POST"])
+def revoke_vehicles_success(code):
+
+	#Leitura dos campos do Formulário
+	code = request.form.get('code')
+
+	if request.method == 'POST':
+		#Realiza autorização do veículo via API:
+		url = "https://aapi3.autotrac-online.com.br/aticapi/v1/accounts/11035/authorizedvehicle/" + str(code)
+		payload = {}
+		files={}
+		headers = { 'Authorization': 'Basic suporte@amazon:juez@2017', 'Ocp-Apim-Subscription-Key': '011cb03f29064101858f71356ac6f6e5', 'Content-Type': 'application/json' }
+		response = requests.request("DELETE", url, headers=headers, data=payload, files=files)
+
+	return render_template('revoke_vehicles_success.html')
+
+@app.route('/non_actorized_vehicle', methods=["GET","POST"])
+def non_actorized_vehicle():
+    return render_template("non_actorized_vehicle.html")
+
+@app.route('/non_date_vehicle', methods=["GET","POST"])
+def non_date_vehicle():
+    return render_template("non_date_vehicle.html")
 
 @app.errorhandler(401)
 def unauthorized_page(error):
