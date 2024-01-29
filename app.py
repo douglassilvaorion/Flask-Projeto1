@@ -94,8 +94,7 @@ def veiculos_autorizados():
 	return render_template("veiculos_autorizados.html", len = len(objetos['Data']), veiculos = objetos['Data'] )
 
 @app.route('/<int:code>/auth_vehicles', methods=["GET","POST"])
-def auth_vehicles(code):
-	print("estou aqui")
+def auth_vehicles(code):	
 	#Busca dados de veiculo
 	vehicle = vehicles.query.filter_by(code = code).first()
 	if request.method == 'POST':				
