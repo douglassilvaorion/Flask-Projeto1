@@ -7,21 +7,19 @@
 	<table class="table table-bordered table-hover">
 		<thead >
 			<tr>
-				<th>Codigo</th>
-				<th>Endereço</th>
+				<th>MCT</th>
 				<th>Nome</th>
 				<th>Num Conta</th>
 				<th>Nome Conta</th>
 				<th>Criado</th>
 				<th>Operador</th>
-				<th>Mensagens</th>
+				<th>Posição</th>
 			</tr>
 		</thead>
 		<tbody>
 			{%for i in range(0, len)%} 
 			
 			<tr>
-				<td>{{veiculos[i]['VehicleCode']}}</td>				
 				<td>{{veiculos[i]['VehicleAddress']}}</td>				
 				<td>{{veiculos[i]['VehicleName']}}</td>				
 				<td>{{veiculos[i]['AccountNumber']}}</td>				

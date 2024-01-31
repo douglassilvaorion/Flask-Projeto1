@@ -8,31 +8,30 @@
 	<title>Autotrac</title>
 	<link href="../../../static/css/styles.css" rel="stylesheet" />   
 </head>
-<h2 style="text-align: center;">Base x Veículo</h2>
+<h2 style="text-align: center;">Histórico de últimas mensagens de retorno atuais</h2>
+
 <hr>
 
 	<table class="table table-bordered table-hover">
 		<thead >
 			<tr>
-				<th>ID</th>
-				<th>Conta</th>
-				<th>Data-Hora</th>
-				<th>Latitude</th>
-				<th>Longitude</th>
-				<th>Posição Hora</th>
-				<th>Marcação</th>				
+				<th>ID Msg</th>
+				<th>MCT</th>
+				<th>Nome</th>
+				<th>Timer</th>				
+				<th>Marcação</th>
+				<th>Mensagem</th>				
 			</tr>
 		</thead>
 		<tbody>
 			{%for i in range(0, len)%} 
 			<tr>
 				<td>{{messages[i]['ID']}}</td>
-				<td>{{messages[i]['AccountNumber']}}</td>
-				<td>{{messages[i]['MessageTime']}}</td>
-				<td>{{messages[i]['Latitude']}}</td>
-				<td>{{messages[i]['Longitude']}}</td>
-				<td>{{messages[i]['PositionTime']}}</td>
+				<td>{{messages[i]['VehicleAddress']}}</td>
+				<td>{{vehicle.name}}</td>
+				<td>{{messages[i]['MessageTime'][11:16] + ' ' + messages[i]['MessageTime'][8:10] + '/' + messages[i]['MessageTime'][5:7] + '/' + messages[i]['MessageTime'][0:4] }}</td>								
 				<td>{{messages[i]['Landmark']}}</td>						
+				<td>{{messages[i]['MessageText']}}</td>
 			</tr>
 			{% endfor %}
 		</tbody>

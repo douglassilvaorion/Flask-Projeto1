@@ -42,8 +42,11 @@ def mensagens(code):
 
 	response = requests.request("GET", url, headers=headers, data=payload, files=files)
 	objetos    = json.loads(response.text)
-	
-	if (response.status_code) == 200:
+
+	# Encontro o Veículo na base
+	vehicle = vehicles.query.filter_by(code = code).first()
+			
+	if (response.status_code) == 200 and not vehicle.code is None:
 		dados      = objetos['Data']
 		
 		df = pd.DataFrame(dados)
@@ -51,7 +54,7 @@ def mensagens(code):
 		for col in df.columns:
 			df[col] = df[col].apply(str)
 		
-		return render_template("mensagens.html", len = len(objetos['Data']), messages = objetos['Data'] )
+		return render_template("mensagens.html", len = len(objetos['Data']), messages = objetos['Data'],vehicle=vehicle )
 	else:
 		return redirect(url_for('non_date_vehicle'))
 

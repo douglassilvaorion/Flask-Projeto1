@@ -8,9 +8,8 @@
 	<table class="table table-bordered table-hover">
 		<thead >
 			<tr>
-				<th>Codigo</th>
-				<th>Nome</th>
-				<th>Endereço</th>							
+				<th>MCT</th>
+				<th>Nome</th>											
 				<th align="center">Ação</th>
 				
 			</tr>
@@ -19,9 +18,8 @@
 			{%for i in range(0, len)%} 
 			
 			<tr>
-				<td>{{veiculos[i]['Code']}}</td>
-				<td>{{veiculos[i]['Name'][1:40]}}</td>
-				<td>{{veiculos[i]['Address']}}</td>				
+				<td>{{veiculos[i]['Address']}}</td>	
+				<td>{{veiculos[i]['Name'][0:40]}}</td>							
 				<td >
 					<a href="{{veiculos[i]['Code']}}/auth_vehicles" type="button"  class="btn btn-primary">Autorizar</a>
 					<a href="{{veiculos[i]['Code']}}/revoke_vehicles" type="button"  class="btn btn-danger">Revogar</a>
