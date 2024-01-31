@@ -20,14 +20,14 @@
 			{%for i in range(0, len)%} 
 			
 			<tr>
-				<td>{{veiculos[i]['VehicleAddress']}}</td>				
+				<td>{{veiculos[i]['VehicleAddress'].strip()}}</td>				
 				<td>{{veiculos[i]['VehicleName']}}</td>				
 				<td>{{veiculos[i]['AccountNumber']}}</td>				
 				<td>{{veiculos[i]['AccountName']}}</td>				
 				<td>{{veiculos[i]['CreatedTime']}}</td>
 				<td>{{veiculos[i]['CreatedOperatorFullName'][1:40]}}</td>
 				<td align="center">					
-					<a href="mensagens/{{veiculos[i]['VehicleCode']}}" type="button"  class="btn btn-warning">Mensagens</a>
+					<a href="mensagens/{{veiculos[i]['VehicleAddress'].strip()}}" type="button"  class="btn btn-warning">Mensagens</a>
 				</td> 
 			</tr>
 			{% endfor %}

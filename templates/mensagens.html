@@ -9,7 +9,7 @@
 	<link href="../../../static/css/styles.css" rel="stylesheet" />   
 </head>
 <h2 style="text-align: center;">Histórico de últimas mensagens de retorno atuais</h2>
-
+<h1>{{message.messagetext}}</h1>
 <hr>
 
 	<table class="table table-bordered table-hover">
@@ -19,17 +19,20 @@
 				<th>Nome</th>
 				<th>Timer</th>				
 				<th>Marcação</th>
-				<th>Mensagem</th>				
+				<th>Macro</th>	
+				<th>Mensagem</th>
+						
 			</tr>
 		</thead>
 		<tbody>
-			{%for i in range(0, len)%} 
+			{% for message in message %}
 			<tr>			
-				<td>{{messages[i]['VehicleAddress']}}</td>
-				<td>{{vehicle.name.strip()}}</td>
-				<td>{{messages[i]['MessageTime'][11:16] + ' ' + messages[i]['MessageTime'][8:10] + '/' + messages[i]['MessageTime'][5:7] + '/' + messages[i]['MessageTime'][0:4] }}</td>								
-				<td>{{messages[i]['Landmark'].strip()}}</td>						
-				<td>{{messages[i]['MessageText'].strip()}}</td>
+				<td>{{message.vehicleaddress}}</td>
+				<td>{{nome_vic.strip()}}</td>
+				<td>{{message.messagetime[11:16] + ' ' + message.messagetime[8:10] + '/' + message.messagetime[5:7] + '/' + message.messagetime[0:4] }}</td>								
+				<td>{{message.landmark.strip()}}</td>	
+				<td>{{message.macrodescri.strip()}}</td>					
+				<td>{{message.messagetext.strip()}}</td>				
 			</tr>
 			{% endfor %}
 		</tbody>

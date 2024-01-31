@@ -3,7 +3,8 @@ import pandas as pd
 from flask import Flask, render_template, request, redirect, url_for, flash
 from urllib.parse import urlparse
 from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime
+from database import db
+from models import vehicles, macros, vehicles, accounts, messages
 
 app = Flask(__name__)
 
@@ -11,59 +12,22 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///autotrac.db"
 
 app.app_context().push()
-db = SQLAlchemy(app)
+db.init_app(app)
 
-class vehicles(db.Model):
-
-	__tablename__ = "vehicles"
-	code = db.Column(db.Integer, primary_key=True)
-	name = db.Column(db.String)
-	address = db.Column(db.String)
-	tripname = db.Column(db.String)
-	authorization = db.Column(db.Boolean)
-
-	def __init__(self, code, name, address, tripname,authorization):
-		self.code = code
-		self.name = name
-		self.address = address
-		self.tripname = tripname
-		self.authorization = authorization
-
-class macro(db.Model):
-	
-	__tablename__ = "macros"
-	code = db.Column(db.Integer, primary_key=True)
-	name = db.Column(db.String)
-	
-	def __init__(self, code, name):
-		self.code = code
-		self.name = name
 
 @app.route('/mensagens/<int:code>', methods=["GET", "POST"])
 def mensagens(code):
 	
-	url = "https://aapi3.autotrac-online.com.br/aticapi/v1/accounts/11035/vehicles/"+str(code)+"/returnmessages"	
-	payload = {}
-	files = {}
-	headers = {	'Authorization': 'Basic suporte@amazon:juez@2017',
-  				'Ocp-Apim-Subscription-Key': '011cb03f29064101858f71356ac6f6e5',
-  				'Content-Type': 'application/json'}
-
-	response = requests.request("GET", url, headers=headers, data=payload, files=files)
-	objetos    = json.loads(response.text)
-
+	# Encontrando as mensagens
+	message = messages.query.all()
+	
 	# Encontro o Veículo na base
-	vehicle = vehicles.query.filter_by(code = code).first()
-			
-	if (response.status_code) == 200 and not vehicle.code is None:
-		dados      = objetos['Data']
-		
-		df = pd.DataFrame(dados)
-		
-		for col in df.columns:
-			df[col] = df[col].apply(str)
-		
-		return render_template("mensagens.html", len = len(objetos['Data']), messages = objetos['Data'],vehicle=vehicle )
+	vehicle = vehicles.query.filter_by(address = code).first()
+
+	nome_vic = vehicle.name
+
+	if not message is None and not vehicle is None:
+		return render_template("mensagens.html", message = message,nome_vic=nome_vic)
 	else:
 		return redirect(url_for('non_date_vehicle'))
 
@@ -167,11 +131,9 @@ def revoke_vehicles_success(code):
 	return render_template('revoke_vehicles_success.html')
 
 @app.route('/macros', methods=["GET","POST"])
-def macros():
+def macros_view():
 	
-	macro.query.all()
-
-	return render_template('macros.html',macro = macro.query.all())
+	return render_template('macros.html',macro = macros.query.all())
 
 @app.route('/macros_add',methods=["GET","POST"])
 def macros_add():
@@ -183,8 +145,8 @@ def macros_add():
 		if not code or not name:
 			flash("Preencha todos os campos do formulário","error")
 		else:
-			macros = macro(code, name)
-			db.session.add(macros)
+			macro = macros(code, name)
+			db.session.add(macro)
 			db.session.commit()
 			return redirect(url_for('macros'))
 		
@@ -211,5 +173,4 @@ def server_error_page(error):
     return render_template("errors/500.html"), 500
 
 if __name__ =="__main__":
-	db.create_all()
 	app.run(port=8085, host='0.0.0.0',debug=True)
