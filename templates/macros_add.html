@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block conteudo %}
+
+<h2 style="text-align: center;">Macros</h2>
+<hr>
+
+<form action="{{url_for('macros_add')}}" method="POST" class="form-control">
+	
+	<label>Codigo</label>
+	<input class="form-control" type="text" name="code"  >
+
+	
+	<label>Nome</label>
+	<input class="form-control" type="text" name="name" >
+		
+	<br>
+	<button class=" btn btn-success">Adicionar</button>
+
+</form>
+
+{% endblock conteudo %}

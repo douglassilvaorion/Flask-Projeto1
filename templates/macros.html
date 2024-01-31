@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block conteudo %}
+
+<h2 style="text-align: center;">Macros</h2>
+<hr>
+
+<div>
+	
+	<a href="macros_add" type="button"  class="btn btn-primary">Adicionar</a>
+</div>
+<br>
+<table class="table table-bordered table-hover">
+	<thead >
+		<tr>
+			<th>Codigo</th>
+			<th>Descrição</th>																
+		</tr>
+	</thead>
+	<tbody>
+		{% for macro in macro %}
+		
+		<tr>
+			<td>{{macro.code}}</td>	
+			<td>{{macro.name}}</td>							
+		</tr>
+		{% endfor %}
+	</tbody>
+</table> 
+
+{% endblock conteudo %}

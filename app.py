@@ -29,9 +29,18 @@ class vehicles(db.Model):
 		self.tripname = tripname
 		self.authorization = authorization
 
+class macro(db.Model):
+	
+	__tablename__ = "macros"
+	code = db.Column(db.Integer, primary_key=True)
+	name = db.Column(db.String)
+	
+	def __init__(self, code, name):
+		self.code = code
+		self.name = name
+
 @app.route('/mensagens/<int:code>', methods=["GET", "POST"])
 def mensagens(code):
-
 	
 	url = "https://aapi3.autotrac-online.com.br/aticapi/v1/accounts/11035/vehicles/"+str(code)+"/returnmessages"	
 	payload = {}
@@ -156,6 +165,30 @@ def revoke_vehicles_success(code):
 		response = requests.request("DELETE", url, headers=headers, data=payload, files=files)
 
 	return render_template('revoke_vehicles_success.html')
+
+@app.route('/macros', methods=["GET","POST"])
+def macros():
+	
+	macro.query.all()
+
+	return render_template('macros.html',macro = macro.query.all())
+
+@app.route('/macros_add',methods=["GET","POST"])
+def macros_add():
+
+	code = request.form.get('code')
+	name = request.form.get('name')
+
+	if request.method == 'POST':
+		if not code or not name:
+			flash("Preencha todos os campos do formulário","error")
+		else:
+			macros = macro(code, name)
+			db.session.add(macros)
+			db.session.commit()
+			return redirect(url_for('macros'))
+		
+	return render_template('/macros_add.html')
 
 @app.route('/non_actorized_vehicle', methods=["GET","POST"])
 def non_actorized_vehicle():

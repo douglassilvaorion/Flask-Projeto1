@@ -15,7 +15,6 @@
 	<table class="table table-bordered table-hover">
 		<thead >
 			<tr>
-				<th>ID Msg</th>
 				<th>MCT</th>
 				<th>Nome</th>
 				<th>Timer</th>				
@@ -25,13 +24,12 @@
 		</thead>
 		<tbody>
 			{%for i in range(0, len)%} 
-			<tr>
-				<td>{{messages[i]['ID']}}</td>
+			<tr>			
 				<td>{{messages[i]['VehicleAddress']}}</td>
-				<td>{{vehicle.name}}</td>
+				<td>{{vehicle.name.strip()}}</td>
 				<td>{{messages[i]['MessageTime'][11:16] + ' ' + messages[i]['MessageTime'][8:10] + '/' + messages[i]['MessageTime'][5:7] + '/' + messages[i]['MessageTime'][0:4] }}</td>								
-				<td>{{messages[i]['Landmark']}}</td>						
-				<td>{{messages[i]['MessageText']}}</td>
+				<td>{{messages[i]['Landmark'].strip()}}</td>						
+				<td>{{messages[i]['MessageText'].strip()}}</td>
 			</tr>
 			{% endfor %}
 		</tbody>
