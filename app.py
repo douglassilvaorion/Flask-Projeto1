@@ -1,6 +1,6 @@
 import requests, json
 import pandas as pd
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash,session
 from urllib.parse import urlparse
 from flask_sqlalchemy import SQLAlchemy
 from database import db
@@ -19,7 +19,7 @@ db.init_app(app)
 def mensagens(code):
 	
 	# Encontrando as mensagens
-	message = messages.query.all()
+	message = messages.query.filter(messages.vehicleaddress == code)
 	
 	# Encontro o Veículo na base
 	vehicle = vehicles.query.filter_by(address = code).first()
