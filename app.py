@@ -32,7 +32,7 @@ def mensagens(code):
 		return redirect(url_for('non_date_vehicle'))
 
 #Roda para Posição de Veiculos
-@app.route('/veiculos', methods=["GET", "POST"])
+@app.route('/', methods=["GET", "POST"])
 def veiculos():
 	
 	url = "https://aapi3.autotrac-online.com.br/aticapi/v1/accounts/11035/vehicles?_limit=1000"

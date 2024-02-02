@@ -132,7 +132,7 @@ def mensagens():
 
 					#Descrição da Macro
 					macro = macros.query.filter_by(code = dw['MacroNumber'][i]).first()
-					print(macro)
+					
 					menssage = messages(dw['ID'][i],
 						 				dw['AccountNumber'][i],
 										dw['VehicleAddress'][i],
@@ -165,7 +165,7 @@ def mensagen():
 	if code_vehicles is not None:
 	
 			url = "https://aapi3.autotrac-online.com.br/aticapi/v1/accounts/11035/vehicles/"+code_vehicles+"/returnmessages"	
-			print(url)
+			
 			payload = {}
 			files={}
 			headers = {	'Authorization': 'Basic suporte@amazon:juez@2017', 'Ocp-Apim-Subscription-Key': '011cb03f29064101858f71356ac6f6e5', 'Content-Type': 'application/json'}
@@ -185,7 +185,7 @@ def mensagen():
 
 						#Descrição da Macro
 						macro = macros.query.filter_by(code = dw['MacroNumber'][i]).first()
-						print(macro)
+						
 						menssage = messages(dw['ID'][i],
 											dw['AccountNumber'][i],
 											dw['VehicleAddress'][i],
