@@ -15,22 +15,34 @@
 			</tr>
 		</thead>
 		<tbody>
-			{%for i in range(0, len)%} 
+			{% for veiculos in veiculos.items %}
 			
 			<tr>
-				<td>{{veiculos[i]['Address']}}</td>	
-				<td>{{veiculos[i]['Name'][0:40]}}</td>							
+				<td>{{veiculos.address}}</td>	
+				<td>{{veiculos.name[0:40]}}</td>							
 				<td >
-					<a href="{{veiculos[i]['Code']}}/auth_vehicles" type="button"  class="btn btn-primary">Autorizar</a>
-					<a href="{{veiculos[i]['Code']}}/revoke_vehicles" type="button"  class="btn btn-danger">Revogar</a>
-					<a href="mensagens/{{veiculos[i]['auth_vehicles']}}" type="button"  class="btn btn-warning">Mensagens</a>
+					<a href="{{veiculos.code}}/auth_vehicles" type="button"  class="btn btn-primary">Autorizar</a>
+					<a href="{{veiculos.code}}/revoke_vehicles" type="button"  class="btn btn-danger">Revogar</a>
+					<a href="mensagens/{{veiculos.code}}" type="button"  class="btn btn-warning">Mensagens</a>
 				</td>
-				
-			
+						
 			</tr>
 			{% endfor %}
 		</tbody>
 	</table> 
-
+<nav aria-label="Navegação de página exemplo">
+	<ul class="pagination">
+		{% if veiculos.has_prev %}			
+			<li class="page-item"><a class="page-link" href="{{url_for('veiculos', page=veiculos.prev_num)}}">Anterior</a></li>
+		{% else %}
+		
+		{% endif %}
+		{% if veiculos.has_next %}		
+			<li class="page-item"><a class="page-link" href="{{url_for('veiculos', page=veiculos.next_num)}}">Próximo</a></li>
+		{% else %}
+	
+		{% endif %}
+	</ul>
+</nav>
 
 {% endblock conteudo %}
