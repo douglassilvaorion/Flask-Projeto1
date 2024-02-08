@@ -5,7 +5,7 @@
 
 <hr>
 
-	<table class="table table-bordered table-hover">
+	<table id="veiculos" class="table table-bordered table-hover">
 		<thead >
 			<tr>
 				<th>MCT</th>
@@ -15,7 +15,7 @@
 			</tr>
 		</thead>
 		<tbody>
-			{% for veiculos in veiculos.items %}
+			{% for veiculos in veiculos %}
 			
 			<tr>
 				<td>{{veiculos.address}}</td>	
@@ -29,19 +29,20 @@
 			{% endfor %}
 		</tbody>
 	</table> 
-<nav aria-label="Navegação de página exemplo">
-	<ul class="pagination">
-		{% if veiculos.has_prev %}			
-			<li class="page-item"><a class="page-link" href="{{url_for('veiculos', page=veiculos.prev_num)}}">Anterior</a></li>
-		{% else %}
-		
-		{% endif %}
-		{% if veiculos.has_next %}		
-			<li class="page-item"><a class="page-link" href="{{url_for('veiculos', page=veiculos.next_num)}}">Próximo</a></li>
-		{% else %}
-	
-		{% endif %}
-	</ul>
-</nav>
-
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+	<script src="//cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+	<link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+	<script>
+		$(document).ready(function(){
+			$('#veiculos').DataTable({
+				language: {
+							info: 'Pagina _PAGE_ de _PAGES_',
+							infoEmpty: 'Registro não encontrado',
+							infoFiltered: '(filtered from _MAX_ total records)',
+							lengthMenu: 'Quantidade _MENU_ registro por pagina',
+							zeroRecords: 'Não encontrado'
+    					}
+			});
+		})
+	</script>
 {% endblock conteudo %}

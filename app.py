@@ -40,11 +40,8 @@ def principal():
 #Roda para Posição de Veiculos
 @app.route('/veiculos', methods=["GET", "POST"])
 def veiculos():
-	page = int(request.args.get('page', 1))
-	per_page = int(request.args.get('per_page',13))
-	page_obj = vehicles.query.paginate(page=page,per_page=per_page)
-	
-	return render_template("veiculos.html", veiculos = page_obj )
+		
+	return render_template("veiculos.html", veiculos = vehicles.query.all() )
 
 @app.route('/veiculos_autorizados')
 def veiculos_autorizados():
