@@ -9,7 +9,7 @@
 	<a href="macros_add" type="button"  class="btn btn-primary">Adicionar</a>
 </div>
 <br>
-<table class="table table-bordered table-hover">
+<table id="macros" class="table table-bordered table-hover" style="width:100%">
 	<thead >
 		<tr>
 			<th>Codigo</th>
@@ -26,5 +26,22 @@
 		{% endfor %}
 	</tbody>
 </table> 
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+	<script src="//cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+	<link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+	<script>
+		$(document).ready(function(){
+			$('#macros').DataTable({
+				language: {
+							info: 'Pagina _PAGE_ de _PAGES_',
+							infoEmpty: 'Registro não encontrado',
+							infoFiltered: '(filtered from _MAX_ total records)',
+							lengthMenu: 'Quantidade _MENU_ registro por pagina',
+							zeroRecords: 'Não encontrado'
+    					}
+			});
+		})
+	</script>
 
 {% endblock conteudo %}

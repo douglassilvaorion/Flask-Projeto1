@@ -4,7 +4,7 @@
 <h2 style="text-align: center;">Veiculos Autorizados</h2>
 <hr>
 
-	<table class="table table-bordered table-hover">
+	<table id="veiculos_autorizados" class="table table-bordered table-hover">
 		<thead >
 			<tr>
 				<th>MCT</th>
@@ -34,5 +34,21 @@
 		</tbody>
 	</table> 
 
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+	<script src="//cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+	<link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+	<script>
+		$(document).ready(function(){
+			$('#veiculos_autorizados').DataTable({
+				language: {
+							info: 'Pagina _PAGE_ de _PAGES_',
+							infoEmpty: 'Registro não encontrado',
+							infoFiltered: '(filtered from _MAX_ total records)',
+							lengthMenu: 'Quantidade _MENU_ registro por pagina',
+							zeroRecords: 'Não encontrado'
+    					}
+			});
+		})
+	</script>
 
 {% endblock conteudo %}

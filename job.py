@@ -228,7 +228,8 @@ def position():
 	for n in df.index:
 		print('Consulta Veiculo: ' + df['VehicleCode'][n])
 
-		url = "https://aapi3.autotrac-online.com.br/aticapi/v1/accounts/11035/vehicles/"+df['VehicleCode'][n]+"/positions"
+		# url = "https://aapi3.autotrac-online.com.br/aticapi/v1/accounts/11035/vehicles/"+df['VehicleCode'][n]+"/positions"
+		url = "https://aapi3.autotrac-online.com.br/aticapi/v1/accounts/11035/vehicles/391915/positions"
 
 		payload = {}
 		files={}
@@ -250,8 +251,7 @@ def position():
 					dw[col] = dw[col].apply(str)
 					
 				for i in dw.index:
-					vehiclesposition = vehiclespositions(dw['AccountNumber'][i],
-										  				 dw['VehicleName'][i],
+					vehiclesposition = vehiclespositions(dw['AccountNumber'][i],										  				 
 														 dw['VehicleName'][i],
 														 dw['VehicleAddress'][i],
 														 dw['VehicleIgnition'][i],
