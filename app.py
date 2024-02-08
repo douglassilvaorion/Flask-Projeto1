@@ -4,7 +4,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash,sess
 from urllib.parse import urlparse
 from flask_sqlalchemy import SQLAlchemy
 from database import db
-from models import vehicles, macros, vehicles, accounts, messages
+from models import vehicles, macros, vehicles, accounts, messages, vehiclespositions
 
 app = Flask(__name__)
 
@@ -145,6 +145,11 @@ def macros_add():
 			return redirect(url_for('macros'))
 		
 	return render_template('/macros_add.html')
+
+@app.route('/veiculos_posicao',methods=["GET","POST"])
+def veiculos_posicao():
+
+	return render_template('/veiculos_posicao.html', posicao = vehiclespositions.query.all())
 
 @app.route('/non_actorized_vehicle', methods=["GET","POST"])
 def non_actorized_vehicle():
