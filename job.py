@@ -4,7 +4,7 @@ from flask import Flask, render_template, jsonify, request
 from urllib.parse import urlparse
 from flask_sqlalchemy import SQLAlchemy
 from database import db
-from models import vehicles, macros, vehicles, accounts, messages
+from models import vehicles, macros, vehicles, accounts, messages, vehiclespositions
 
 app = Flask(__name__)
 
@@ -210,6 +210,71 @@ def mensagen():
 		
 	return jsonify({'Data':objetos})
 
+@app.route('/position', methods=["GET", "POST"])
+def position():
+
+	#Busca dados de veículos autorizados:
+	url = "http://127.0.0.1:5000/veiculos_autorizados"
+	response 	= requests.request("GET", url)
+	
+	objetos    	= json.loads(response.text)
+	veiculos	= objetos['Data']
+
+	df = pd.DataFrame(veiculos)
+
+	for col in df.columns:
+		df[col] = df[col].apply(str)	
+
+	for n in df.index:
+		print('Consulta Veiculo: ' + df['VehicleCode'][n])
+
+		url = "https://aapi3.autotrac-online.com.br/aticapi/v1/accounts/11035/vehicles/"+df['VehicleCode'][n]+"/positions"
+
+		payload = {}
+		files={}
+		headers = {
+		'Authorization': 'Basic suporte@amazon:juez@2017',
+		'Ocp-Apim-Subscription-Key': '011cb03f29064101858f71356ac6f6e5',
+		'Content-Type': 'application/json'
+		}
+
+		response = requests.request("GET", url, headers=headers, data=payload, files=files)
+		objetos    = json.loads(response.text)
+		
+		if (response.status_code) == 200:
+				dados      = objetos['Data']
+				
+				dw = pd.DataFrame(dados)
+				
+				for col in dw.columns:
+					dw[col] = dw[col].apply(str)
+					
+				for i in dw.index:
+					vehiclesposition = vehiclespositions(dw['AccountNumber'][i],
+										  				 dw['VehicleName'][i],
+														 dw['VehicleName'][i],
+														 dw['VehicleAddress'][i],
+														 dw['VehicleIgnition'][i],
+														 dw['Velocity'][i],
+														 dw['Odometer'][i],
+														 dw['Hourmeter'][i],
+														 dw['Latitude'][i],
+														 dw['Longitude'][i],
+														 dw['Landmark'][i],
+														 dw['UF'][i],
+														 dw['CountryDescription'][i],
+														 dw['PositionTime'][i],
+														 dw['Direction'][i],
+														 dw['DirectionGPS'][i],
+														 dw['Distance'][i],
+														 dw['ReceivedTime'][i],
+														 dw['TransmissionChannel'][i],
+														 dw['County'][i])
+					
+					db.session.add(vehiclesposition)
+					db.session.commit()	
+
+					return jsonify({'Data':objetos})
 	
 @app.errorhandler(401)
 def unauthorized_page(error):

@@ -93,3 +93,54 @@ class macros(db.Model):
 	def __init__(self, code, name):
 		self.code = code
 		self.name = name	
+
+class vehiclespositions(db.Model):
+
+	__tablename__ = "vehiclespositions"
+
+	id = db.Column(db.Integer, primary_key=True,autoincrement=True)
+	accountnumber = db.Column(db.Integer)
+	vehiclename = db.Column(db.String)
+	vehicleaddress = db.Column(db.String)
+	vehicleignition = db.Column(db.Integer)
+	velocity = db.Column(db.Integer)
+	odometer = db.Column(db.Integer)
+	hourmeter = db.Column(db.Integer)
+	latitude = db.Column(db.Integer)
+	longitude = db.Column(db.Integer)
+	landmark = db.Column(db.String)
+	uf = db.Column(db.String)
+	countrydescription = db.Column(db.String)
+	positiontime  = db.Column(db.String)
+	direction = db.Column(db.Integer)
+	directiongps = db.Column(db.Integer)
+	distance = db.Column(db.Integer)
+	receivedtime = db.Column(db.String)
+	transmissionchannel = db.Column(db.Integer)
+	county = db.Column(db.String)
+
+	def __init__(self, id, accountnumber, vehiclename, vehicleaddress, vehicleignition, velocity, odometer, 
+			  hourmeter, latitude, longitude, landmark, uf, countrydescription, positiontime, 
+			  direction, directiongps, distance, receivedtime, transmissionchannel, county  ):
+		
+		self.id = id
+		self.accountnumber = accountnumber
+		self.vehiclename = vehiclename
+		self.vehicleaddress = vehicleaddress
+		self.vehicleignition = vehicleignition
+		self.velocity = velocity
+		self.odometer = odometer
+		self.hourmeter = hourmeter
+		self.latitude = latitude
+		self.longitude = longitude
+		self.landmark = landmark
+		self.uf = uf
+		self.countrydescription = countrydescription
+		self.positiontime = positiontime
+		self.direction = direction
+		self.directiongps = directiongps
+		self.distance = distance
+		self.receivedtime = receivedtime
+		self.transmissionchannel = transmissionchannel
+		self.county = county
+	
