@@ -17,14 +17,14 @@
 			</tr>
 		</thead>
 		<tbody>
-			{% for posicao in posicao %}
+			{%for i in range(0, len)%} 
 			
 			<tr>
-				<td>{{posicao.id}}</td>	
-				<td>{{posicao.accountnumber[0:40]}}</td>	
-				<td>{{posicao.landmark[0:40]}}</td>						
-				<td>{{posicao.uf[0:10]}}</td>						
-				<td>{{posicao.county[0:40]}}</td>												
+				<td>{{posicao[i]['AccountNumber']}}</td>											
+				<td>{{posicao[i]['VehicleName']}}</td>	
+				<td>{{posicao[i]['Landmark']}}</td>	
+				<td>{{posicao[i]['UF']}}</td>	
+				<td>{{posicao[i]['County']}}</td>
 			</tr>
 			{% endfor %}
 		</tbody>
