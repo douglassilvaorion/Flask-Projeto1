@@ -13,7 +13,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///autotrac.db"
 
 app.app_context().push()
 db.init_app(app)
-		
+	
 #Fim da Montagem de Dados do Banco
   
 @app.route('/contas', methods=["GET", "POST"])
@@ -289,5 +289,6 @@ def server_error_page(error):
     return render_template("errors/500.html"), 500
 
 if __name__ =="__main__":
-	db.create_all()
-	app.run(debug=True)
+	db.create_all()		
+	app.run(port=5000, host='0.0.0.0', debug=False)
+	print("Servidor Ativo")
