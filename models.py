@@ -98,7 +98,7 @@ class vehiclespositions(db.Model):
 
 	__tablename__ = "vehiclespositions"
 
-	id = db.Column(db.Integer, primary_key=True,autoincrement=True)
+	id = db.Column(db.Integer, index=True, unique=True, autoincrement=True, primary_key=True)
 	accountnumber = db.Column(db.Integer)
 	vehiclename = db.Column(db.String)
 	vehicleaddress = db.Column(db.String)
@@ -119,11 +119,10 @@ class vehiclespositions(db.Model):
 	transmissionchannel = db.Column(db.Integer)
 	county = db.Column(db.String)
 
-	def __init__(self, id, accountnumber, vehiclename, vehicleaddress, vehicleignition, velocity, odometer, 
+	def __init__(self, accountnumber, vehiclename, vehicleaddress, vehicleignition, velocity, odometer, 
 			  hourmeter, latitude, longitude, landmark, uf, countrydescription, positiontime, 
 			  direction, directiongps, distance, receivedtime, transmissionchannel, county  ):
 		
-		self.id = id
 		self.accountnumber = accountnumber
 		self.vehiclename = vehiclename
 		self.vehicleaddress = vehicleaddress

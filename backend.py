@@ -219,62 +219,56 @@ def position():
 	
 	objetos    	= json.loads(response.text)
 	veiculos	= objetos['Data']
+	
+	if (response.status_code) == 200 and len(objetos['Data']) > 0:
+		for n in range(0, len(veiculos)):
 
-	df = pd.DataFrame(veiculos)
+			url = "https://aapi3.autotrac-online.com.br/aticapi/v1/accounts/11035/vehicles/"+veiculos[n]['VehicleCode']+"/positions"
 
-	for col in df.columns:
-		df[col] = df[col].apply(str)	
+			payload = {}
+			files={}
 
-	for n in df.index:
-		print('Consulta Veiculo: ' + df['VehicleCode'][n])
+			headers = { 'Authorization': 'Basic suporte@amazon:juez@2017', 'Ocp-Apim-Subscription-Key': '011cb03f29064101858f71356ac6f6e5', 'Content-Type': 'application/json' }
 
-		# url = "https://aapi3.autotrac-online.com.br/aticapi/v1/accounts/11035/vehicles/"+df['VehicleCode'][n]+"/positions"
-		url = "https://aapi3.autotrac-online.com.br/aticapi/v1/accounts/11035/vehicles/391915/positions"
+			response = requests.request("GET", url, headers=headers, data=payload, files=files)
+			objetos  = json.loads(response.text)
+			
+			if (response.status_code) == 200:
+				posicao	 = objetos['Data']	
 
-		payload = {}
-		files={}
-		headers = {
-		'Authorization': 'Basic suporte@amazon:juez@2017',
-		'Ocp-Apim-Subscription-Key': '011cb03f29064101858f71356ac6f6e5',
-		'Content-Type': 'application/json'
-		}
+				print("Buscando posição: " + url)
+				dw = pd.DataFrame(posicao)	
 
-		response = requests.request("GET", url, headers=headers, data=payload, files=files)
-		objetos    = json.loads(response.text)
-		
-		if (response.status_code) == 200:
-				dados      = objetos['Data']
-				
-				dw = pd.DataFrame(dados)
-				
 				for col in dw.columns:
 					dw[col] = dw[col].apply(str)
-					
+				
 				for i in dw.index:
-					vehiclesposition = vehiclespositions(dw['AccountNumber'][i],										  				 
-														 dw['VehicleName'][i],
-														 dw['VehicleAddress'][i],
-														 dw['VehicleIgnition'][i],
-														 dw['Velocity'][i],
-														 dw['Odometer'][i],
-														 dw['Hourmeter'][i],
-														 dw['Latitude'][i],
-														 dw['Longitude'][i],
-														 dw['Landmark'][i],
-														 dw['UF'][i],
-														 dw['CountryDescription'][i],
-														 dw['PositionTime'][i],
-														 dw['Direction'][i],
-														 dw['DirectionGPS'][i],
-														 dw['Distance'][i],
-														 dw['ReceivedTime'][i],
-														 dw['TransmissionChannel'][i],
-														 dw['County'][i])
-					
-					db.session.add(vehiclesposition)
-					db.session.commit()	
 
-					return jsonify({'Data':objetos})
+					if not vehiclespositions.query.filter_by( vehicleaddress = dw['VehicleAddress'][i], latitude = dw['Latitude'][i], longitude = dw['Longitude'][i] ).first():
+
+						vehiclesposition = vehiclespositions(dw['AccountNumber'][i],				  				 
+															dw['VehicleName'][i],
+															dw['VehicleAddress'][i],
+															dw['VehicleIgnition'][i],
+															dw['Velocity'][i],
+															dw['Odometer'][i],
+															dw['Hourmeter'][i],
+															dw['Latitude'][i],
+															dw['Longitude'][i],
+															dw['Landmark'][i],
+															dw['UF'][i],
+															dw['CountryDescription'][i],
+															dw['PositionTime'][i],
+															dw['Direction'][i],
+															dw['DirectionGPS'][i],
+															dw['Distance'][i],
+															dw['ReceivedTime'][i],
+															dw['TransmissionChannel'][i],
+															dw['County'][i])
+						db.session.add(vehiclesposition)
+						db.session.commit()
+
+	return jsonify({'Código':"Sucesso!"}) 
 	
 @app.errorhandler(401)
 def unauthorized_page(error):
@@ -290,4 +284,4 @@ def server_error_page(error):
 
 if __name__ =="__main__":
 	db.create_all()		
-	app.run(port=5000, host='0.0.0.0', debug=False)
+	app.run(port=5000, host='0.0.0.0', debug=True)
