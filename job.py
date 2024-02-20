@@ -29,3 +29,12 @@ headers = {}
 response = requests.request("GET", url, headers=headers, data=payload)
 
 print("Leitura das mensagens por veiculo!")
+
+url = "http://192.168.144.239:5000/position"
+
+payload = {}
+headers = {}
+
+response = requests.request("GET", url, headers=headers, data=payload)
+
+print("Leitura posição de veiculo!")
